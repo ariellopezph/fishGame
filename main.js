@@ -73,19 +73,19 @@ class Player {
 
     draw(){
         if (mouse.click) { // Dibujo linea
-            ctx.lineWidth = 0.2;
+            // ctx.lineWidth = 0.2;
             ctx.beginPath();
             ctx.moveTo(this.x, this.y);
-            ctx.lineTo(mouse.x, mouse.y);
+            // ctx.lineTo(mouse.x, mouse.y);
             ctx.stroke();
 
         }
-        ctx.fillStyle = 'transparent'; // Dibujo personaje
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-        ctx.fillRect(this.x, this.y, this.radius, 10);
+        // ctx.fillStyle = 'transparent'; // Dibujo personaje
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        // ctx.closePath();
+        // ctx.fillRect(this.x, this.y, this.radius, 10);
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -100,6 +100,54 @@ class Player {
     }
 }
 const player = new Player();
+
+
+// Personaje no jugador 1
+
+const npcImage = new Image();
+npcImage.src = './Img/npc.png';
+
+class Npc {
+    constructor(){
+        this.x = canvas.height + 200;
+        this.y = Math.random() *(canvas.width - 150) + 90;
+        this.radius = 50;
+        this.speed = Math.random() * 2 + 2;
+        this.frame = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.spritWidth = 255;
+        this.spritHeight = 200;
+    }
+
+    update(){
+        this.x -= this.speed;
+        if (this.x < 0 - this.radius * 2){
+            this.x = canvas.width + 200;
+            this.y = Math.random() * (canvas.height - 150) + 90;
+            this.speed = Math.random() * 2 + 2;
+        }
+        
+        
+    }
+
+    draw(){
+        // ctx.fillStyle = 'orange';
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        ctx.drawImage(npcImage, this.frameX * this.spritWidth, this.frameY * this.spritHeight, this.spritWidth, this.spritHeight, this.x -55, this.y -50, this.radius * 2.1, this.radius * 2.1);
+        
+    }
+}
+
+const npc = new Npc();
+
+
+function handleNpc(){
+    npc.update();
+    npc.draw();
+}
 
 // Bubbles
 
@@ -127,13 +175,13 @@ class Bubble {
         
     }
     draw(){
-        ctx.fillStyle = 'blue';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-        ctx.stroke();
-        ctx.drawImage(bubbleDraw, this.frameX * this.spritWidth, this.frameY * this.spritHeight, this.spritWidth, this.spritHeight, this.x -0, this.y -0, this.spritWidth/2, this.spritHeight/2);
+        // ctx.fillStyle = 'transparent';
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        // ctx.closePath();
+        // ctx.stroke();
+        ctx.drawImage(bubbleDraw, this.x - 50, this.y - 50, this.radius * 2, this.radius * 2);
     }
 }
 
@@ -160,14 +208,10 @@ function handleBubbles(){
     for (let i = 0; i < bubblesArray.length; i++){ // Velocidad y Dibujo
         bubblesArray[i].update();
         bubblesArray[i].draw();
-        
-    }
-
-    for (let i = 0; i < bubblesArray.length; i++){ // Borra las que se van de cuadro
         if (bubblesArray[i].y < 0 - bubblesArray[i].radius * 2){
             bubblesArray.splice(i, 1);
-        }
-        if (bubblesArray[i]){
+            i--;
+        } else if (bubblesArray[i]){
             if (bubblesArray[i].distance < bubblesArray[i].radius + player.radius){ // Colision burbujas
                 if (!bubblesArray[i].counted){
                     if (bubblesArray[i].sound == 'sound1'){
@@ -178,24 +222,36 @@ function handleBubbles(){
                     score++;
                     bubblesArray[i].counted = true;
                     bubblesArray.splice(i, 1);
+                    i--;
                 }
+            }            
         }
-            
-        }
+    }
     }
     
     
-    
+
+
+// Repeating backgrounds
+const background = new Image();
+background.src = './Img/background.jpg';
+
+function handleBackground(){
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 }
+
+
 // Animation Loop
 
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    handleBackground();
     player.update();
     player.draw();
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.fillText('score: ' + score, 10, 50);
     handleBubbles();
+    handleNpc();
     gameFrame++;
     requestAnimationFrame(animate);
     // bGSound();
