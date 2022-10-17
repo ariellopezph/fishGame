@@ -8,13 +8,13 @@ canvas.height = 700;
 let score = 0;
 let gameFrame = 0;
 ctx.font = '50px Georgia';
-
+gameOver = false;
 
 
 // Mouse Interactivity
 let canvasPosition = canvas.getBoundingClientRect();
 const mouse = {
-    x : 0,
+    x : canvas.width/2,
     y : canvas.height/2,
     click : false
 }
@@ -80,7 +80,7 @@ class Player {
             ctx.stroke();
 
         }
-        // ctx.fillStyle = 'transparent'; // Dibujo personaje
+        // ctx.fillStyle = 'red'; // Dibujo personaje
         // ctx.beginPath();
         // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         // ctx.fill();
@@ -102,15 +102,19 @@ class Player {
 const player = new Player();
 
 
-// Personaje no jugador 1
+// Npc 1
+
+// Carga imagen npc
 
 const npcImage = new Image();
 npcImage.src = './Img/npc.png';
 
+// Clase npc
+
 class Npc {
     constructor(){
-        this.x = canvas.height + 200;
-        this.y = Math.random() *(canvas.width - 150) + 90;
+        this.x = canvas.width + 200; // -200
+        this.y = Math.random() *(canvas.height - 150) + 90;
         this.radius = 50;
         this.speed = Math.random() * 2 + 2;
         this.frame = 0;
@@ -120,16 +124,36 @@ class Npc {
         this.spritHeight = 200;
     }
 
+    // Movimiento
+
     update(){
-        this.x -= this.speed;
-        if (this.x < 0 - this.radius * 2){
-            this.x = canvas.width + 200;
+        this.x -= this.speed; // +=
+        if (this.x < 0 - this.radius * 2){ // > 1550
+            this.x = canvas.width + 200; // -200
             this.y = Math.random() * (canvas.height - 150) + 90;
             this.speed = Math.random() * 2 + 2;
+            
+        }
+
+        // Efecto de movimiento
+
+        if (gameFrame % 5 == 0){
+            this.frame++;
+            if (this.frame >= 12) this.frame = 0;
+            if (this.frame == 3 || this.frame == 7 || this.frame == 11){
+                this.frameX = 0;
+            } else {
+                this.frameX++;
+            }
+            if (this.frame < 3) this.frameY = 0;
+            else if (this.frame < 7) this.frameY = 1;
+            else if (this.frame < 11) this.frameY = 2;
+            else this.frameY = 0;
         }
         
         
     }
+    // Dibujo de npc
 
     draw(){
         // ctx.fillStyle = 'orange';
@@ -141,21 +165,254 @@ class Npc {
     }
 }
 
-const npc = new Npc();
+// Npc 2
+// Carga imagen npc
 
+const npcImage2 = new Image();
+npcImage2.src = './Img/npc2.png';
+
+// Clase npc
+
+class Npc2 {
+    constructor(){
+        this.x = canvas.width - 200; // -200
+        this.y = Math.random() *(canvas.height - 450) + 90;
+        this.radius = 50;
+        this.speed = Math.random() * 2 + 2;
+        this.frame = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.spritWidth = 498;
+        this.spritHeight = 327;
+    }
+
+    // Movimiento
+
+    update(){
+        this.x += this.speed; // +=
+        if (this.x > 1550 - this.radius * 2){ // > 1550
+            this.x = canvas.width - 1550; // -200
+            this.y = Math.random() * (canvas.height - 150) + 90;
+            this.speed = Math.random() * 1 + 2;
+            
+        }
+        // Efecto de movimiento
+
+        if (gameFrame % 5 == 0){
+            this.frame++;
+            if (this.frame >= 12) this.frame = 0;
+            if (this.frame == 3 || this.frame == 7 || this.frame == 11){
+                this.frameX = 0;
+            } else {
+                this.frameX++;
+            }
+            if (this.frame < 3) this.frameY = 0;
+            else if (this.frame < 7) this.frameY = 1;
+            else if (this.frame < 11) this.frameY = 2;
+            else this.frameY = 0;
+        }
+        
+        
+    }
+
+    // Dibujo de npc
+
+    draw(){
+        // ctx.fillStyle = 'orange';
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        ctx.drawImage(npcImage2, this.frameX * this.spritWidth, this.frameY * this.spritHeight, this.spritWidth, this.spritHeight, this.x -55, this.y -50, this.radius * 2, this.radius * 2);
+        
+    }
+}
+
+// Instanciando NPC
+
+const npc = new Npc();
+const npc2 = new Npc2();
+
+// Funcion para movimiento y dibujo de los NPC
 
 function handleNpc(){
     npc.update();
     npc.draw();
+    npc2.update();
+    npc2.draw();
+    
+}
+
+// Enemy 1
+
+// Carga img enemy
+
+const enemy1Image = new Image();
+enemy1Image.src = './Img/enemy1.png';
+
+// Clase enemy1
+
+class Enemy1 {
+    constructor(){
+        this.x = canvas.width - 200; // -200
+        this.y = Math.random() *(canvas.height - 150) + 90;
+        this.radius = 50;
+        this.speed = Math.random() * 2 + 2;
+        this.frame = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.spritWidth = 492;
+        this.spritHeight = 327;
+    }
+    // Movimiento
+
+    update(){
+        this.x += this.speed; // +=
+        if (this.x > 1550 - this.radius * 2){ // > 1550
+            this.x = canvas.width - 1550; // -200
+            this.y = Math.random() * (canvas.height - 150) + 90;
+            this.speed = Math.random() * 2 + 2;
+            
+        }
+        // Efecto movimiento
+
+        if (gameFrame % 5 == 0){
+            this.frame++;
+            if (this.frame >= 12) this.frame = 0;
+            if (this.frame == 3 || this.frame == 7 || this.frame == 11){
+                this.frameX = 0;
+            } else {
+                this.frameX++;
+            }
+            if (this.frame < 3) this.frameY = 0;
+            else if (this.frame < 7) this.frameY = 1;
+            else if (this.frame < 11) this.frameY = 2;
+            else this.frameY = 0;
+        }
+        //Colision
+
+        const dx = this.x - player.x;
+        const dy = this.y - player.y;
+        const distance = Math.sqrt(dx *dx + dy * dy);
+        if (distance < this.radius + player.radius){
+            handleGameOver(); // Termina juego
+        }
+        
+    }
+    // Dibujo enemy
+
+    draw(){
+        // ctx.fillStyle = 'orange';
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        ctx.drawImage(enemy1Image, this.frameX * this.spritWidth, this.frameY * this.spritHeight, this.spritWidth, this.spritHeight, this.x -55, this.y -50, this.radius * 2.1, this.radius * 2.1);
+        
+    }
+}
+
+
+// Enemy 2
+
+// Carga imagenes enemy
+
+const enemy2Image = new Image();
+enemy2Image.src = './Img/enemy2.png';
+
+// Clase enemy 2
+
+class Enemy2 {
+    constructor(){
+        this.x = canvas.width + 200; // -200
+        this.y = Math.random() *(canvas.height - 150) + 90;
+        this.radius = 50;
+        this.speed = Math.random() * 2 + 2;
+        this.frame = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.spritWidth = 492;
+        this.spritHeight = 327;
+    }
+    // Movimiento
+
+    update(){
+        this.x -= this.speed; // +=
+        if (this.x < 0 - this.radius * 2){ // > 1550
+            this.x = canvas.width + 200; // -200
+            this.y = Math.random() * (canvas.height - 150) + 90;
+            this.speed = Math.random() * 2 + 2;
+            
+        }
+        // Efecto movimiento
+
+        if (gameFrame % 5 == 0){
+            this.frame++;
+            if (this.frame >= 12) this.frame = 0;
+            if (this.frame == 3 || this.frame == 7 || this.frame == 11){
+                this.frameX = 0;
+            } else {
+                this.frameX++;
+            }
+            if (this.frame < 3) this.frameY = 0;
+            else if (this.frame < 7) this.frameY = 1;
+            else if (this.frame < 11) this.frameY = 2;
+            else this.frameY = 0;
+        }
+        // Colision whit player
+        const dx = this.x - player.x;
+        const dy = this.y - player.y;
+        const distance = Math.sqrt(dx *dx + dy * dy);
+        if (distance < this.radius + player.radius){
+            handleGameOver(); // Fin de juego
+        }
+        
+    }
+    // Dibujo
+
+    draw(){
+        // ctx.fillStyle = 'orange';
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        ctx.drawImage(enemy2Image, this.frameX * this.spritWidth, this.frameY * this.spritHeight, this.spritWidth, this.spritHeight, this.x -55, this.y -50, this.radius * 2.1, this.radius * 2.1);
+        
+    }
+}
+
+
+// Instancias de enemys
+
+const enemy1 = new Enemy1();
+const enemy2 = new Enemy2();
+
+
+function handleEnemy(){
+    enemy1.update();
+    enemy1.draw();
+    enemy2.update();
+    enemy2.draw();
+    
+    
+}
+
+// Funcion terminar el juego por colision
+
+function handleGameOver(){
+    ctx.fillStyle = 'black';
+    ctx.fillText("Game over. Your score is: " + score, 430, 250);
+    gameOver = true;
 }
 
 // Bubbles
+
+// Carga imagenes
 
 const bubbleDraw = new Image();
 bubbleDraw.src = './Img/bubble.png';
 
 
 const bubblesArray = [];
+// Clase burbujas
+
 class Bubble {
     constructor(){
         this.x = Math.random() * canvas.width;
@@ -166,6 +423,7 @@ class Bubble {
         this.counted = false;
         this.sound = Math.random() <= 0.5 ? 'sound1' : 'sound2';
     }
+    // Movimiento
 
     update(){
         this.y -= this.speed;
@@ -174,6 +432,7 @@ class Bubble {
         this.distance = Math.sqrt(dx*dx + dy*dy);
         
     }
+    // Dibujo
     draw(){
         // ctx.fillStyle = 'transparent';
         // ctx.beginPath();
@@ -185,7 +444,7 @@ class Bubble {
     }
 }
 
-// Sounds
+// Soundos
 
 const bubblePop1 = document.createElement('audio');
 bubblePop1.src = './Sounds/bubbles-single1.wav';
@@ -194,6 +453,7 @@ bubblePop2.src = './Sounds/bubbles-single2.wav';
 const backGroundSound = document.createElement('audio');
 backGroundSound.src = './Sounds/background.mp3';
 
+// Musica de fondo
 function bGSound(){
     backGroundSound.play();
 }
@@ -219,7 +479,7 @@ function handleBubbles(){
                     } else {
                         bubblePop2.play();
                     }
-                    score++;
+                    score++; // Suma puntos
                     bubblesArray[i].counted = true;
                     bubblesArray.splice(i, 1);
                     i--;
@@ -233,6 +493,7 @@ function handleBubbles(){
 
 
 // Repeating backgrounds
+
 const background = new Image();
 background.src = './Img/background.jpg';
 
@@ -252,8 +513,9 @@ function animate(){
     ctx.fillText('score: ' + score, 10, 50);
     handleBubbles();
     handleNpc();
+    handleEnemy();
     gameFrame++;
-    requestAnimationFrame(animate);
+    if (!gameOver) requestAnimationFrame(animate);
     // bGSound();
 }
 
